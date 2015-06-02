@@ -1,0 +1,91 @@
+1. When considering time efficiency, the type of algorithm {next, worst, first, best} used matters because first fit and next fit will always perform faster than best fit and worst fit. This will be true in every case, including at equilibrium. This is because, the first and next fit  algorithm will search the memory (or free list) for a large enough free hole for the process, and return it whereas best fit and worst fit will always search the whole memory (or free list). In a real system, where there are usually a large amount of blocks in memory, it may be really inefficient to search the whole memory and find the “best” or “worst” block, hence the choice of algorithm is important when considering time efficiency. The CSV below shows some of the simulations for the different algorithms and shows the average number of comparisons it took for the algorithm to find the free block in memory.
+
+Input, Memory Size, Algorithm, Average number of comparisons to find the free block in memory
+m200_in.txt, 200, First fit, 2.05
+m200_in.txt, 200, Best fit, 3.62
+m200_in.txt, 200, Worst fit, 4.63
+m200_in.txt, 200, Next fit, 2.74
+
+m300_in.txt, 300, First fit, 3.60
+m300_in.txt, 300, Best fit, 7.25
+m300_in.txt, 300, Worst fit, 6.30
+m300_in.txt, 300, Next fit, 4.05
+
+/* I used input m300_in.txt again, but this time I changed the number of times a process can be swapped out before not being re-queued again to 1000, instead of 3. Should show equilibrium behaviour.*/
+
+m300_in.txt, 300, First fit, 4.20
+m300_in.txt, 300, Best fit, 9.19
+m300_in.txt, 300, Worst fit, 7.40
+m300_in.txt, 300, Next fit, 6.39
+
+It can be seen from the results above, that if time efficiency is taken into consideration, the type of algorithm you use does matter. For every single input, first fit and next fit performed faster than worst fit and best fit, even when I ran it on equilibrium behaviour. Hence in a real system, where there will be a large amount of blocks in memory, and processes will need to be allocated fairly quickly, the type of fitting algorithm you pick does matter.
+
+
+
+Another approach to take when comparing the performance of these algorithms is determining the amount of average external fragmentation. Best fit tends to leave very large holes, and very small holes. These small holes can be so small that no processes can fit within them (external fragmentation). Overtime these holes could build up and there may be enough space for a process in memory, however this space is not contiguous hence the memory manager must swap processes out of memory. Worst fit tends to do the opposite, and also leaves large holes. First fit and next fit tend to leave holes which are of “average” size. External fragmentation is difficult to analyse since it depends on the type of input you provide. I have measured the average amount of external fragmentation for each algorithm and provided it below in CSV format.
+
+Input, Memory Size, Algorithm, Average number of holes, Average hole size
+m200_in.txt, 200, First fit, 1.89, 31.4
+m200_in.txt, 200, Best fit, 1.38, 53.10
+m200_in.txt, 200, Worst fit, 1.89, 31.4
+m200_in.txt, 200, Next fit, 1.89, 31.4
+
+m300_in.txt, 300, First fit, 2.85, 38.87
+m300_in.txt, 300, Best fit, 2.75, 38.12
+m300_in.txt, 300, Worst fit, 1.45, 44.5
+m300_in.txt, 300, Next fit, 1.45, 44.5
+
+/* I used input m300_in.txt again, but this time I changed the number of times a process can be swapped out before not being re-queued again to 1000, instead of 3. Should show equilibrium behaviour.*/
+
+m300_in.txt, 300, First fit, 3.60, 22.15
+m300_in.txt, 300, Best fit, 3.60, 22.15
+m300_in.txt, 300, Worst fit, 1.40, 36.53
+m300_in.txt, 300, Next fit,  1.40, 36.53
+
+It can be seen from the results above, the amount of fragmentation is dependent on the type of input the program receives. In some instances, like for input m200_in.txt, best fit algorithm has the least amount of external fragmentation on average, whereas for input m300_in.txt and m300_in.txt (equilibrium), worst fit and next fit have the least amount of fragmentation on average. Regardless, it is clear in the cases above that certain algorithms perform better than others on certain inputs (even at equilibrium). As a result, it may be beneficial to pick a certain type of algorithm {first, next, best, worst} if you know the kind of input you are going to get. This would be useful if memory space was an issue.
+
+Overall conclusion: The above data shows the type of algorithm you pick does matter. If time efficiency is taken into consideration, first fit and next fit will perform faster than best fit and worst fit in every case, including at equilibrium. In a real system, you must take time efficiency into consideration as it would be inefficient to scan the whole memory each time a process needs to be loaded in. If external fragmentation is taken into consideration, specific algorithms are better at utilising memory than others, and this depends largely on the input which is received. It may be beneficial to pick a certain type of algorithm {first, next, best, worst} if you knew the kind of input you got in advance. 
+
+2. Assumptions: 
+a) Memory is infinitely large (To simplify the cases where a process is on either end of memory).
+b) The system has reached equilibrium (i.e. On average, The number of times a process asks to be put into memory = The number of times other processes are removed from memory. This makes the  average number of holes constant on average.
+
+Let Sm be the average number of processes in memory at equilibrium.
+Then Sm consists of 4 different types of processes, Let these be denoted A, B, C, D. (If I considered memory to be finite, there will be 9 cases making it quite messy and difficult).
+A process of type A has holes on both sides.
+A process of type B has a hole on its left side, and a process on its right side.
+A process of type C has a process on its left side, and a hole on its right side.
+A process of type D has processes on both sides.
+Then 
+
+Sm = A + B + C + D (Equation 1)
+
+From this, it is possible to calculate the number of holes on average at equilibrium. Let this be denoted by S_H. The total number of holes must be divided by 2, since a hole must be in-between two processes and it must not be counted twice. A process of type A has 2 holes, a process of type B has one hole and so on...
+
+S_H = (2*A + B + C)/2 (Equation 2)
+
+Additionally, B = C. I assumed memory to be infinitely large, hence consecutive processes will always will always have a process of type B on one side, and type C on the other side. Therefore the equation can be simplified to:
+
+S_H = A+B (Equation 3)
+
+Removing a process of type B and C has no effect on the number of holes. However, removing a process of type D increases the number of holes. The probability that this happens, is given below:
+
+Pr(S_H increases by 1) = Pr(Process must be removed from memory)*D/Sm       (Equation 4)
+
+The probability that S_H decreases by one is made up of two parts. The first part being removing a process of type A, and the second part being adding a process which fits into a hole perfectly (leaving no free space). Let q be the probability, that such a hole is found.
+
+Pr(S_H decreases by 1) = Pr(Process must be removed from memory)*A/Sm + Pr(Process needs to be added to memory)*q (Equation 5)
+
+At equilibrium, both equation 4 and 5 will be equal, and also Pr(Process must be removed from memory) = Pr(Process needs to be added to memory).
+Doing some algebra, one can obtain the following equation:
+
+D = A + q*Sm (Equation 6)
+
+Now putting Equation 6 and Equation 3, in Equation 1, and doing some algebra, one obtains the following result:
+
+S_H = Sm*(1-q)/2
+
+In reality, the probability of finding a perfectly sized memory segment (not bigger not smaller) will be quite low on average at equilibrium, since the smaller processes already occupy memory and are not swapped out. Now at equilibrium, if the probability of finding the exact fit for a process (denoted as q) approaches 0, (i.e. it is difficult to find  a perfect fit for processes), S_H approaches Sm/2. 
+
+Hence S_H = Sm/2
+Reference used: Lubomir, Alan, Operating Systems Principles, Chapter 7: Physical Memory, Pages 221-224

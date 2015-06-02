@@ -1,0 +1,24 @@
+COMP30023:Project 1 readme file.
+Author:Rohan Sharma, rsharma1
+s.n:639271
+
+Compilation instructions:
+Typing "make" should build the project.
+
+If there is any problems running the project:
+You can use the following command (just copy + paste in terminal (must be in project directory)):
+gcc -Wall -o memswap memswap.c fit_algorithms.c ready_queue.c memory.c -lm
+
+All the documentation for the functions are in their respective files, and the file structure is described below:
+
+memswap.c: Main file which acts as a facilitator
+memswap.h: A header file for memswap.c
+memory.c: This file includes all functions which can be used to simulate memory using linked lists.
+memory.h: A header file for memory.c
+ready_queue.c: This file includes all functions which can be used to simulate a ready queue for processes.
+ready_queue.h: A header file for ready_queue.c
+process.h: Defines the structure of the process used in this simulation.
+fit_algorithms.c: This has 4 different functions for fitting algorithms {best,first,next,worst} fit.
+fit_algorithms.h: This is the header file for fit_algorithms.
+Makefile: The Makefile for this project.
+report.txt: My report for part B.
